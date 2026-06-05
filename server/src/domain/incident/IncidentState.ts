@@ -1,0 +1,8 @@
+
+
+export enum IncidentState {
+  OPEN = "OPEN",
+  INVESTIGATING = "INVESTIGATING",
+  MITIGATED = "MITIGATED",
+  RESOLVED = "RESOLVED",
+}
