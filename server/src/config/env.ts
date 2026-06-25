@@ -13,4 +13,6 @@ export const env = {
   
   REDIS_HOST: process.env.REDIS_HOST || 'localhost',
   REDIS_PORT: parseInt(process.env.REDIS_PORT || '6379', 10),
+
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
 };
