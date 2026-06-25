@@ -1,4 +1,6 @@
 import express from 'express';
+import http from 'http';
+import { WebSocketServer } from './api/streaming/WebSocketServer';
 import healthRoutes from './api/rest/HealthRoutes';
 import { errorHandler } from './api/rest/middlewares/errorHandler';
 import { checkDbConnection } from './infrastructure/database/pgClient';
@@ -6,6 +8,7 @@ import { connectRedis } from './infrastructure/cache/RedisClient';
 import { NotFoundError } from './api/rest/ApiErrors';
 
 const app = express();
+const httpServer = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
@@ -27,7 +30,10 @@ const startServer = async () => {
   await checkDbConnection();
   await connectRedis();
 
-  app.listen(PORT, () => {
+  // Initialize WebSocket server
+  WebSocketServer.initialize(httpServer);
+
+  httpServer.listen(PORT, () => {
     console.log(`🚀 Watchtower Server is running on http://localhost:${PORT}`);
   });
 };
