@@ -3,6 +3,7 @@ import http from 'http';
 import { WebSocketServer } from './api/streaming/WebSocketServer';
 import healthRoutes from './api/rest/HealthRoutes';
 import incidentRoutes from './api/rest/IncidentRoutes';
+import metricRoutes from './api/rest/MetricRoutes';
 import { errorHandler } from './api/rest/middlewares/errorHandler';
 import { checkDbConnection } from './infrastructure/database/pgClient';
 import { connectRedis } from './infrastructure/cache/RedisClient';
@@ -18,6 +19,7 @@ app.use(express.json());
 // Routes
 app.use('/api/v1', healthRoutes);
 app.use('/api/v1/incidents', incidentRoutes);
+app.use('/api/v1/metrics', metricRoutes);
 
 // Catch 404 and forward to error handler
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
