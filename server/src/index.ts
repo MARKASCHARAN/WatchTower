@@ -1,6 +1,8 @@
 import express from 'express';
 import healthRoutes from './api/rest/HealthRoutes';
 import { errorHandler } from './api/rest/middlewares/errorHandler';
+import { checkDbConnection } from './infrastructure/database/pgClient';
+import { connectRedis } from './infrastructure/cache/RedisClient';
 import { NotFoundError } from './api/rest/ApiErrors';
 
 const app = express();
@@ -21,6 +23,13 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 app.use(errorHandler);
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Watchtower Server is running on http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  await checkDbConnection();
+  await connectRedis();
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Watchtower Server is running on http://localhost:${PORT}`);
+  });
+};
+
+startServer();
