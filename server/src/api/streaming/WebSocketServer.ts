@@ -13,7 +13,7 @@ export class WebSocketServer {
     });
 
     this.io.on('connection', (socket: Socket) => {
-      console.log(`🔌 Client connected: ${socket.id}`);
+      console.log(`Client connected: ${socket.id}`);
 
       // Basic health ping
       socket.on('ping', (data) => {
@@ -21,11 +21,11 @@ export class WebSocketServer {
       });
 
       socket.on('disconnect', () => {
-        console.log(`🔌 Client disconnected: ${socket.id}`);
+        console.log(`Client disconnected: ${socket.id}`);
       });
     });
 
-    console.log('✅ WebSocket Server initialized');
+    console.log('WebSocket Server initialized');
   }
 
   // Method to broadcast metrics to all connected dashboards

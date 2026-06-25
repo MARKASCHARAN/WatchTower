@@ -19,9 +19,9 @@ pgPool.on('error', (err) => {
 export const checkDbConnection = async () => {
   try {
     const client = await pgPool.connect();
-    console.log('✅ Connected to PostgreSQL');
+    console.log('Connected to PostgreSQL');
     client.release();
   } catch (err) {
-    console.error('❌ Failed to connect to PostgreSQL:', err);
+    console.error('Failed to connect to PostgreSQL:', err);
   }
 };

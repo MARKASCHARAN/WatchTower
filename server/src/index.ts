@@ -38,7 +38,7 @@ const startServer = async () => {
   WebSocketServer.initialize(httpServer);
 
   httpServer.listen(PORT, () => {
-    console.log(`🚀 Watchtower Server is running on http://localhost:${PORT}`);
+    console.log(`Watchtower Server is running on http://localhost:${PORT}`);
   });
 };
 
