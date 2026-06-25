@@ -16,10 +16,24 @@ pgPool.on('error', (err) => {
   process.exit(-1);
 });
 
-export const checkDbConnection = async () => {
+export const initializeDatabase = async () => {
   try {
     const client = await pgPool.connect();
-    console.log('Connected to PostgreSQL');
+    
+    // Create necessary tables
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS incidents (
+        id VARCHAR(50) PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        state VARCHAR(50) NOT NULL,
+        context JSONB,
+        ai_analysis TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    console.log('Connected to PostgreSQL and schema initialized');
     client.release();
   } catch (err) {
     console.error('Failed to connect to PostgreSQL:', err);

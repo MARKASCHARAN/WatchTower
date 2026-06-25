@@ -23,7 +23,7 @@ export class ThresholdWorker {
         
         if (result) {
           const metric = JSON.parse(result.element);
-          this.evaluate(metric);
+          await this.evaluate(metric);
         }
       } catch (error) {
         console.error('[ThresholdWorker] Error polling metrics:', error);
@@ -33,7 +33,7 @@ export class ThresholdWorker {
     }
   }
 
-  private evaluate(metric: any) {
+  private async evaluate(metric: any) {
     let breached = false;
     let reason = '';
 
@@ -54,7 +54,7 @@ export class ThresholdWorker {
 
     if (breached) {
       console.log(`[ThresholdWorker] Threshold breached for service ${metric.serviceId}: ${reason}`);
-      incidentService.createIncident(`Automatic Incident: ${reason}`, { metric });
+      await incidentService.createIncident(`Automatic Incident: ${reason}`, { metric });
     }
   }
 }

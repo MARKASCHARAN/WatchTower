@@ -5,7 +5,7 @@ import healthRoutes from './api/rest/HealthRoutes';
 import incidentRoutes from './api/rest/IncidentRoutes';
 import metricRoutes from './api/rest/MetricRoutes';
 import { errorHandler } from './api/rest/middlewares/errorHandler';
-import { checkDbConnection } from './infrastructure/database/pgClient';
+import { initializeDatabase } from './infrastructure/database/pgClient';
 import { connectRedis } from './infrastructure/cache/RedisClient';
 import { thresholdWorker } from './workers/ThresholdWorker';
 import { NotFoundError } from './api/rest/ApiErrors';
@@ -32,7 +32,7 @@ app.use(errorHandler);
 
 // Start Server
 const startServer = async () => {
-  await checkDbConnection();
+  await initializeDatabase();
   await connectRedis();
 
   // Initialize WebSocket server

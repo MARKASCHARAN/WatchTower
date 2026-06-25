@@ -6,13 +6,13 @@ import { incidentService } from '../../services/IncidentService';
 const router = Router();
 
 // Create a new incident
-router.post('/', (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   const { title } = req.body;
   if (!title) {
     throw new BadRequestError('Incident title is required');
   }
 
-  const newIncident = incidentService.createIncident(title);
+  const newIncident = await incidentService.createIncident(title);
 
   res.status(201).json({
     success: true,
@@ -21,12 +21,12 @@ router.post('/', (req: Request, res: Response) => {
 });
 
 // Update incident state
-router.patch('/:id/state', (req: Request, res: Response) => {
+router.patch('/:id/state', async (req: Request, res: Response) => {
   const id = req.params.id as string;
   const { nextState } = req.body as { nextState: IncidentState };
 
   try {
-    const updatedIncident = incidentService.updateIncidentState(id, nextState);
+    const updatedIncident = await incidentService.updateIncidentState(id, nextState);
     
     res.status(200).json({
       success: true,
