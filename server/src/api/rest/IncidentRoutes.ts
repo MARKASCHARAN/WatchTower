@@ -1,12 +1,9 @@
 import { Router, Request, Response } from 'express';
-import { IncidentState, IncidentFSM } from '../../domain/IncidentFSM';
+import { IncidentState } from '../../domain/IncidentFSM';
 import { BadRequestError } from './ApiErrors';
+import { incidentService } from '../../services/IncidentService';
 
 const router = Router();
-
-// In-memory mock DB for incidents until we wire up PostgreSQL queries
-const mockIncidents: Record<string, { id: string; title: string; state: IncidentState }> = {};
-let idCounter = 1;
 
 // Create a new incident
 router.post('/', (req: Request, res: Response) => {
@@ -15,13 +12,7 @@ router.post('/', (req: Request, res: Response) => {
     throw new BadRequestError('Incident title is required');
   }
 
-  const newIncident = {
-    id: `INC-${idCounter++}`,
-    title,
-    state: IncidentState.OPEN
-  };
-
-  mockIncidents[newIncident.id] = newIncident;
+  const newIncident = incidentService.createIncident(title);
 
   res.status(201).json({
     success: true,
@@ -34,18 +25,12 @@ router.patch('/:id/state', (req: Request, res: Response) => {
   const id = req.params.id as string;
   const { nextState } = req.body as { nextState: IncidentState };
 
-  const incident = mockIncidents[id];
-  if (!incident) {
-    throw new BadRequestError(`Incident ${id} not found`);
-  }
-
   try {
-    // Attempt FSM Transition
-    incident.state = IncidentFSM.transition(incident.state, nextState);
+    const updatedIncident = incidentService.updateIncidentState(id, nextState);
     
     res.status(200).json({
       success: true,
-      data: incident
+      data: updatedIncident
     });
   } catch (error: any) {
     throw new BadRequestError(error.message);

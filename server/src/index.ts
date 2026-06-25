@@ -7,6 +7,7 @@ import metricRoutes from './api/rest/MetricRoutes';
 import { errorHandler } from './api/rest/middlewares/errorHandler';
 import { checkDbConnection } from './infrastructure/database/pgClient';
 import { connectRedis } from './infrastructure/cache/RedisClient';
+import { thresholdWorker } from './workers/ThresholdWorker';
 import { NotFoundError } from './api/rest/ApiErrors';
 
 const app = express();
@@ -36,6 +37,9 @@ const startServer = async () => {
 
   // Initialize WebSocket server
   WebSocketServer.initialize(httpServer);
+
+  // Start background workers
+  thresholdWorker.start();
 
   httpServer.listen(PORT, () => {
     console.log(`Watchtower Server is running on http://localhost:${PORT}`);
